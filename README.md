@@ -1,4 +1,4 @@
-# 简历投递记录追踪系统 - Vue3 实践项目
+# 简历投递记录追踪系统
 
 ![Vue](https://img.shields.io/badge/Vue-3.4.21-brightgreen)
 ![Pinia](https://img.shields.io/badge/Pinia-2.1.7-orange)
