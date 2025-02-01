@@ -1,35 +1,36 @@
-# resume_tracker test
+# 简历投递记录追踪系统 - Vue3 实践项目
 
-This template should help get you started developing with Vue 3 in Vite.
+![Vue](https://img.shields.io/badge/Vue-3.4.21-brightgreen)
+![Pinia](https://img.shields.io/badge/Pinia-2.1.7-orange)
 
-## Recommended IDE Setup
+一个用于跟踪简历投递状态的单页面应用，帮助求职者清晰管理求职进度。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[在线演示](https://your-vercel-app-url.vercel.app) | [项目文档](docs/README.md)
 
-## Customize configuration
+## 🛠️ 技术栈
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+| 技术               | 用途                          | 文档链接                     |
+|--------------------|-----------------------------|---------------------------|
+| Vue 3              | 前端框架                      | https://vuejs.org/        |
+| Pinia              | 状态管理                      | https://pinia.vuejs.org/  |
+| Vue Router         | 路由管理                      | https://router.vuejs.org/ |
+| Pinia持久化插件      | 状态持久化                    | https://prazdevs.github.io/pinia-plugin-persistedstate/ |
+| date-fns           | 日期处理                      | https://date-fns.org/     |
+| Vercel             | 项目部署                      | https://vercel.com/       |
 
-## Project Setup
+## 📦 项目结构
 
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+```bash
+src/
+├─ assets/           # 静态资源
+├─ components/       # 公共组件
+│   └─ StatusBadge.vue # 状态标签组件
+├─ stores/           # Pinia状态管理
+│   └─ useJobStore.js # 核心数据逻辑
+├─ router/           # 路由配置
+├─ views/            # 页面组件
+│   ├─ HomeView.vue   # 首页
+│   ├─ AddJobView.vue # 添加记录
+│   └─ JobDetailView.vue # 详情页面
+├─ App.vue           # 根组件
+└─ main.js           # 入口文件
