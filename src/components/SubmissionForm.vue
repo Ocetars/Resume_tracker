@@ -52,7 +52,6 @@
           <label class="text-sm text-gray-500 block mb-1 ml-2">当前状态</label>
           <select
             v-model="newSubmission.status"
-            @change="handleStatusChange"
             class="w-full border p-2 rounded h-[42px]"
           >
             <option value="待回复">待回复</option>
@@ -61,17 +60,6 @@
             <option value="已拒绝">已拒绝</option>
             <option value="已拿offer">已拿offer</option>
           </select>
-        </div>
-
-        <!-- 预约时间 -->
-        <div v-if="showAppointmentDate" class="flex-1 min-w-[180px]">
-          <label class="text-sm text-gray-500 block mb-1 ml-2">面/笔试时间</label>
-          <input
-            v-model="newSubmission.appointmentDate"
-            type="datetime-local"
-            required
-            class="w-full border p-2 rounded"
-          >
         </div>
 
         <!-- 投递时间 -->
@@ -100,16 +88,13 @@
 </template>
 
 <script setup>
+// 导入 Vue 的响应式 API 和状态管理 store
 import { ref, reactive, computed } from 'vue'
 import { useSubmissionStore } from '../stores/submissionStore'
 
-const store = useSubmissionStore()
-const showForm = ref(false)
-
-const showAppointmentDate = computed(() => {
-  return ['待面试', '待笔试'].includes(newSubmission.status)
-})
-
+// ====================
+// 定义初始投递数据的方法
+// ====================
 function getInitialSubmission() {
   return {
     company: '',
@@ -120,20 +105,24 @@ function getInitialSubmission() {
   }
 }
 
-const newSubmission = reactive(getInitialSubmission())
+// ====================
+// 初始化状态数据
+// ====================
+const store = useSubmissionStore()           // 投递记录状态管理
+const showForm = ref(false)                   // 控制表单的显示/隐藏
+const newSubmission = reactive(getInitialSubmission())  // 初始化表单数据
 
+// ====================
+// 事件处理函数
+// ====================
+// 添加新的投递记录，并在提交后重置表单数据
 function addSubmission() {
   store.addSubmission({ ...newSubmission })
   showForm.value = false
   Object.assign(newSubmission, getInitialSubmission())
 }
 
-function handleStatusChange() {
-  if (!showAppointmentDate.value) {
-    newSubmission.appointmentDate = ''
-  }
-}
-
+// 关闭表单并重置表单数据
 function closeForm() {
   showForm.value = false
   Object.assign(newSubmission, getInitialSubmission())
