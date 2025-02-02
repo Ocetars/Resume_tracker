@@ -4,7 +4,7 @@
         <thead>
           <tr>
             <th class="border p-2">企业名称</th>
-            <th class="border p-2">企业地点</th>
+            <th class="border p-2">地点</th>
             <th class="border p-2">当前状态</th>
             <th class="border p-2">投递时间</th>
           </tr>

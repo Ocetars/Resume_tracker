@@ -26,21 +26,20 @@
   const store = useSubmissionStore()
   const showForm = ref(false)
   
-  const newSubmission = reactive({
-    company: '',
-    location: '',
-    status: '待回复',
-    date: new Date().toISOString().split('T')[0]
-  })
-  
-  function addSubmission() {
-    store.addSubmission({ ...newSubmission })
-    showForm.value = false
-    Object.assign(newSubmission, {
+  function getInitialSubmission() {
+    return {
       company: '',
       location: '',
       status: '待回复',
       date: new Date().toISOString().split('T')[0]
-    })
+    }
+  }
+  
+  const newSubmission = reactive(getInitialSubmission())
+  
+  function addSubmission() {
+    store.addSubmission({ ...newSubmission })
+    showForm.value = false
+    Object.assign(newSubmission, getInitialSubmission())
   }
   </script>
