@@ -7,6 +7,9 @@ export const useSubmissionStore = defineStore('submission', {
   actions: {
     addSubmission(submission) {
       this.submissions.unshift(submission)
+    },
+    removeSubmission(index) {
+      this.submissions.splice(index, 1)
     }
   }
 })
