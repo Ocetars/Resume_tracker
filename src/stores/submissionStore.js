@@ -6,7 +6,11 @@ export const useSubmissionStore = defineStore('submission', {
   }),
   actions: {
     addSubmission(submission) {
-      this.submissions.unshift(submission)
+      this.submissions.push({
+        ...submission,
+        interviewType: '',
+        appointmentDate: submission.appointmentDate || ''
+      })
     },
     removeSubmission(index) {
       this.submissions.splice(index, 1)
