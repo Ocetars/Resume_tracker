@@ -4,9 +4,11 @@
     <!-- 关闭按钮 -->
     <button
       @click="closeForm"
-      class="absolute -right-3 -top-3 bg-gray-200 text-gray-600 w-7 h-7 rounded-full flex items-center justify-center hover:bg-blue-200 transition-colors"
+      class="absolute right-6 top-2 bg-gray-100 text-gray-500 w-8 h-6 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all duration-200"
     >
-      ✖️
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
     </button>
 
     <form @submit.prevent="addSubmission" class="flex flex-wrap gap-3 items-end">
@@ -17,7 +19,7 @@
           v-model="newSubmission.company"
           placeholder="XX公司"
           required
-          class="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+          class="w-full border p-2 rounded"
         >
       </div>
 
@@ -62,7 +64,7 @@
       <div class="flex-1 min-w-[100px]">
         <button 
           type="submit" 
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
         >
           提交
         </button>
