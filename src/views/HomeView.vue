@@ -19,6 +19,9 @@ const interviewCount = computed(() =>
 const testCount = computed(() =>
   store.submissions.filter(item => item.status === '待笔试').length
 )
+const totalCount = computed(() =>
+  interviewCount.value + testCount.value
+)
 const offerCount = computed(() =>
   store.submissions.filter(item => item.status === '已拿offer').length
 )
@@ -49,12 +52,8 @@ const offerCount = computed(() =>
               <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ appliedCount }}</div>
             </div>
             <div>
-              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">待面试</div>
-              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ interviewCount }}</div>
-            </div>
-            <div>
-              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">待笔试</div>
-              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ testCount }}</div>
+              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">待面/笔试</div>
+              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ totalCount }}</div>
             </div>
             <div>
               <div class="text-gray-600 dark:text-gray-300 text-base font-medium">offer</div>
