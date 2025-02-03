@@ -4,7 +4,7 @@
     <!-- 关闭按钮 -->
     <button
       @click="closeForm"
-      class="absolute right-6 top-2 bg-gray-100 text-gray-500 w-8 h-6 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all duration-200"
+      class="absolute right-6 top-2 bg-gray-100 text-gray-500 w-8 h-6 rounded-lg flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all duration-200 cursor-pointer"
     >
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -64,7 +64,7 @@
       <div class="flex-1 min-w-[100px]">
         <button 
           type="submit" 
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg cursor-pointer"
         >
           提交
         </button>

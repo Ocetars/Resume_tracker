@@ -9,18 +9,18 @@ const store = useSubmissionStore()
 const showForm = ref(false)
 const filteredSubmissions = ref(store.submissions)
 
-// 根据 filteredSubmissions 计算各个状态的数量
+// 使用原始数据 store.submissions 计算各个状态的数量
 const appliedCount = computed(() =>
-  filteredSubmissions.value.filter(item => item.status === '已投递').length
+  store.submissions.length
 )
 const interviewCount = computed(() =>
-  filteredSubmissions.value.filter(item => item.status === '待面试').length
+  store.submissions.filter(item => item.status === '待面试').length
 )
 const testCount = computed(() =>
-  filteredSubmissions.value.filter(item => item.status === '待笔试').length
+  store.submissions.filter(item => item.status === '待笔试').length
 )
 const offerCount = computed(() =>
-  filteredSubmissions.value.filter(item => item.status === 'offer').length
+  store.submissions.filter(item => item.status === '已拿offer').length
 )
 </script>
 
@@ -34,7 +34,7 @@ const offerCount = computed(() =>
           <!-- 投递按钮 -->
           <button 
             @click="showForm = true"
-            class="w-full md:w-auto flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
+            class="cursor-pointer w-full md:w-auto flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>

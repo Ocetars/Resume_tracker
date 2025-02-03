@@ -21,16 +21,15 @@
         <div class="w-3/12 pl-2">{{ submission.company }}</div>
         <div class="w-5/12 relative">
           <div 
-            class="cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
             @click.stop="openStatusMenu(submission)"
           >
-            <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap" 
+            <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap cursor-pointer transition-colors duration-200" 
                   :class="{
-                    'bg-blue-100 text-blue-800': submission.status === '待回复',
-                    'bg-yellow-100 text-yellow-800': submission.status === '待面试',
-                    'bg-purple-100 text-purple-800': submission.status === '待笔试',
-                    'bg-green-100 text-green-800': submission.status === '已拿offer',
-                    'bg-red-100 text-red-800': submission.status === '已拒绝'
+                    'bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900': submission.status === '待回复',
+                    'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900': submission.status === '待面试',
+                    'bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900': submission.status === '待笔试',
+                    'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900': submission.status === '已拿offer',
+                    'bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900': submission.status === '已拒绝'
                   }">
               {{ displayStatus(submission) }}
               <template v-if="['待面试', '待笔试'].includes(submission.status)">
