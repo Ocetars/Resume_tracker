@@ -1,95 +1,138 @@
 <template>
-  <div class="space-y-2 relative">
+  <div class="space-y-0 relative">
     <!-- 表头 -->
-    <div class="flex font-bold bg-gray-100 p-2 rounded">
-      <div class="w-4/12">企业名称</div>
-      <div class="w-4/12">状态信息</div>
-      <div class="w-3/12">工作地点</div>
-      <div class="w-3/12">投递时间</div>
+    <div class="flex font-semibold bg-blue-50 text-blue-800 p-3 border-b border-blue-100">
+      <div class="w-3/12 pl-2">企业名称</div>
+      <div class="w-5/12 pl-2">进展状态</div>
+      <div class="w-2/12">工作地点</div>
+      <div class="w-2/12">投递时间</div>
     </div>
     
     <!-- 数据行 -->
-    <div 
-      v-for="(submission, index) in submissions" 
-      :key="index"
-      class="group relative flex items-center p-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+    <TransitionGroup 
+      name="list" 
+      tag="div"
     >
-      <div class="w-4/12">{{ submission.company }}</div>
-      <div class="w-4/12 relative">
-        <div 
-          class="cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
-          @click.stop="openStatusMenu(submission)"
-        >
-          <span v-html="displayStatus(submission)"></span>
+      <div 
+        v-for="(submission, index) in submissions" 
+        :key="submission.company + submission.date"
+        class="group relative flex items-center p-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200 overflow-visible"
+      >
+        <div class="w-3/12 pl-2">{{ submission.company }}</div>
+        <div class="w-5/12 relative">
           <div 
-            v-if="activeSubmission === submission"
-            class="status-menu-container absolute z-10 top-full left-0 mt-2 bg-white border rounded-lg shadow-lg p-4 min-w-[200px] transition-all duration-200 origin-top"
-            :class="activeSubmission === submission ? 'scale-100' : 'scale-95 opacity-0'"
+            @click.stop="openStatusMenu(submission)"
           >
-            <!-- 修改后：状态选择菜单，使用自定义下拉列表 -->
-            <ul class="mb-3">
-              <li 
-                v-for="option in statusOptions" 
-                :key="option" 
-                class="cursor-pointer hover:bg-blue-50 p-2 rounded"
-                :class="{'bg-blue-100': option === selectedStatus && (option === '待面试' || option === '待笔试')}"
-                @click.stop="selectStatus(option, submission)"
-              >
-                {{ option }}
-              </li>
-            </ul>
+            <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap cursor-pointer transition-colors duration-200" 
+                  :class="{
+                    'bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900': submission.status === '待回复',
+                    'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900': submission.status === '待面试',
+                    'bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900': submission.status === '待笔试',
+                    'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900': submission.status === '已拿offer',
+                    'bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900': submission.status === '已拒绝'
+                  }">
+              {{ displayStatus(submission) }}
+              <template v-if="['待面试', '待笔试'].includes(submission.status)">
+                <template v-if="submission.interviewType">
+                  <span class="opacity-75">-</span>
+                  <span>{{ submission.interviewType }}</span>
+                </template>
+                <template v-if="submission.appointmentDate">
+                  <span class="text-blue-600">
+                    （{{ formatDateTime(submission.appointmentDate) }}）
+                  </span>
+                </template>
+              </template>
+            </div>
+            <div 
+              v-if="activeSubmission === submission"
+              class="status-menu-container fixed z-50 top-auto left-auto bg-white border border-gray-100 rounded-xl shadow-xl flex"
+              :class="[
+                'transition-all duration-200',
+                activeSubmission === submission ? 'scale-100 opacity-100' : 'scale-95 opacity-0 translate-y-2',
+                'origin-bottom'
+              ]"
+            >
+              <!-- 状态选项列表 -->
+              <ul class="p-2 space-y-0.5 min-w-[140px]">
+                <li 
+                  v-for="option in statusOptions" 
+                  :key="option" 
+                  class="cursor-pointer px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 text-sm"
+                  :class="{
+                    'bg-blue-50 text-blue-800': option === selectedStatus && option === '待回复',
+                    'bg-yellow-50 text-yellow-800': option === selectedStatus && option === '待面试',
+                    'bg-purple-50 text-purple-800': option === selectedStatus && option === '待笔试',
+                    'bg-green-50 text-green-800': option === selectedStatus && option === '已拿offer',
+                    'bg-red-50 text-red-800': option === selectedStatus && option === '已拒绝',
+                    'hover:bg-gray-50': option !== selectedStatus
+                  }"
+                  @click.stop="selectStatus(option, submission)"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full"
+                    :class="{
+                      'bg-blue-500': option === '待回复',
+                      'bg-yellow-500': option === '待面试',
+                      'bg-purple-500': option === '待笔试',
+                      'bg-green-500': option === '已拿offer',
+                      'bg-red-500': option === '已拒绝'
+                    }"
+                  ></span>
+                  {{ option }}
+                </li>
+              </ul>
 
-            <!-- 面试/笔试附加信息 -->
-            <div v-if="showInterviewForm" class="space-y-3 mt-3">
-              <select
-                v-model="interviewType"
-                class="w-full p-2 border rounded"
-                required
-                @click.stop
+              <!-- 面试/笔试附加信息 -->
+              <div v-if="showInterviewForm" 
+                class="w-[200px] p-2 space-y-2 border-l border-gray-100"
               >
-                <option disabled value="">线上/线下</option>
-                <option value="线上">线上</option>
-                <option value="线下">线下</option>
-                <option value="形式待定">形式待定</option>
-              </select>
-              <input
-                v-model="interviewTime"
-                type="datetime-local"
-                class="w-full p-2 border rounded"
-                required
-                @click.stop
-              >
-              <button
-                @click.stop="saveInterviewInfo"
-                class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                确认修改
-              </button>
+                <select
+                  v-model="interviewType"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                  @click.stop
+                >
+                  <option disabled value="">选择形式</option>
+                  <option value="线上">线上</option>
+                  <option value="线下">线下</option>
+                  <option value="形式待定">形式待定</option>
+                </select>
+                <input
+                  v-model="interviewTime"
+                  type="datetime-local"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                  @click.stop
+                >
+                <button
+                  @click.stop="saveInterviewInfo"
+                  class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded-lg shadow hover:shadow-md transition-all duration-200"
+                >
+                  确认修改
+                </button>
+              </div>
             </div>
           </div>
         </div>
+        <div class="w-2/12 text-gray-500 text-sm">{{ submission.location }}</div>
+        <div class="w-2/12 text-gray-500 text-sm">{{ formatDate(submission.date) }}</div>
+
+        <!-- 删除按钮 -->
+        <button
+          @click="deleteSubmission(submission)"
+          class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-red-500 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-50 transition-colors duration-200 shadow-sm hover:shadow-md border border-red-100 opacity-0 group-hover:opacity-100"
+          title="删除"
+        >
+          ×
+        </button>
       </div>
-      <div class="w-3/12">{{ submission.location }}</div>
-      <div class="w-3/12">{{ formatDate(submission.date) }}</div>
-
-      <!-- 扩大悬停区域（透明容器），使得按钮的悬停范围往右延伸 -->
-      <div class="absolute inset-y-0 -right-12 w-12" aria-hidden="true"></div>
-
-      <!-- 删除按钮 -->
-      <button
-        @click="deleteSubmission(submission)"
-        class="absolute -right-8 top-1/2 -translate-y-1/2 bg-red-100 text-red-600 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors opacity-0 group-hover:opacity-100"
-        title="删除"
-      >
-        ×
-      </button>
-    </div>
+    </TransitionGroup>
   </div>
 </template>
 
 <script setup>
 // 导入 Vue 的响应式 API 及生命周期钩子
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 // 导入状态管理 store 和 pinia 辅助函数
 import { useSubmissionStore } from '../stores/submissionStore'
 
@@ -170,8 +213,28 @@ function openStatusMenu(submission) {
   } else {
     activeSubmission.value = submission
     selectedStatus.value = submission.status
-    interviewType.value = '' // 重置线上线下选项为默认值
+    interviewType.value = ''
     interviewTime.value = submission.appointmentDate || ''
+    
+    nextTick(() => {
+      const menu = document.querySelector('.status-menu-container')
+      const trigger = event.currentTarget
+      if (menu && trigger) {
+        const rect = trigger.getBoundingClientRect()
+        const menuHeight = menu.offsetHeight
+        
+        menu.style.top = `${rect.top - menuHeight - 8}px`
+        menu.style.left = `${Math.max(16, rect.left)}px`
+        
+        const menuWidth = menu.offsetWidth
+        const viewportWidth = window.innerWidth
+        if (rect.left + menuWidth > viewportWidth) {
+          menu.style.left = `${viewportWidth - menuWidth - 16}px`
+        }
+
+        menu.style.position = 'fixed'
+      }
+    })
   }
 }
 
@@ -188,18 +251,9 @@ function selectStatus(option, submission) {
   // 如果选择了 "待面试" 或 "待笔试"，则下方的面试/笔试附加信息表单会自动显示
 }
 
-// 根据提交记录生成状态显示内容，包含面试/笔试附加信息
+// 修改状态显示逻辑，将HTML标签改为使用模板
 function displayStatus(submission) {
-  let status = submission.status
-  if (['待面试', '待笔试'].includes(submission.status)) {
-    if (submission.interviewType) {
-      status += `-${submission.interviewType}`
-    }
-    if (submission.appointmentDate) {
-      status += `<span class="text-blue-500">（${formatDateTime(submission.appointmentDate)}）</span>`
-    }
-  }
-  return status
+  return submission.status
 }
 
 // 保存面试/笔试附加信息，并更新当前记录
@@ -209,26 +263,67 @@ async function saveInterviewInfo() {
 }
 
 // 更新指定记录中的状态和附加信息，并关闭状态菜单
-function saveChanges(submission) {
+async function saveChanges(submission) {
   const fullIndex = store.submissions.findIndex(item => item === submission)
   if (fullIndex === -1) return
   const isoTime = interviewTime.value ? new Date(interviewTime.value).toISOString() : ''
-  store.$patch((state) => {
-    state.submissions[fullIndex] = {
-      ...submission,
-      status: selectedStatus.value,
-      interviewType: interviewType.value,
-      appointmentDate: isoTime
-    }
+  await store.updateSubmission(fullIndex, {
+    status: selectedStatus.value,
+    interviewType: interviewType.value,
+    appointmentDate: isoTime
   })
   activeSubmission.value = null
 }
 
-// 新增：删除记录时根据传入记录查找实际索引再删除
-function deleteSubmission(submission) {
+// 删除记录时的处理
+async function deleteSubmission(submission) {
   const fullIndex = store.submissions.findIndex(item => item === submission)
   if (fullIndex !== -1) {
-    store.removeSubmission(fullIndex)
+    await store.removeSubmission(fullIndex)
   }
 }
 </script>
+
+<style scoped>
+/* 菜单动画 */
+.status-menu-container {
+  animation: menu-pop 0.2s ease-out;
+}
+
+@keyframes menu-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 列表项进入和离开的过渡 */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* 列表项移动时的过渡 */
+.list-move {
+  transition: transform 0.5s ease;
+}
+
+/* 确保离开的项目不影响布局 */
+.list-leave-active {
+  position: absolute;
+}
+</style>

@@ -5,7 +5,7 @@
       v-model="searchKeyword"
       type="text"
       placeholder="搜索公司/地点/状态..."
-      class="w-full p-3 border border-gray-400 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      class="w-full p-3 border border-gray-200 rounded-xl pl-10 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
     >
 
     <svg class="w-5 h-5 absolute left-3 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
