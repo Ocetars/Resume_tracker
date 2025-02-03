@@ -9,98 +9,126 @@
     </div>
     
     <!-- 数据行 -->
-    <div 
-      v-for="(submission, index) in submissions" 
-      :key="index"
-      class="group relative flex items-center p-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200 overflow-visible"
+    <TransitionGroup 
+      name="list" 
+      tag="div"
     >
-      <div class="w-3/12 pl-2">{{ submission.company }}</div>
-      <div class="w-5/12 relative">
-        <div 
-          class="cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
-          @click.stop="openStatusMenu(submission)"
-        >
-          <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap" 
-                :class="{
-                  'bg-blue-100 text-blue-800': submission.status === '待回复',
-                  'bg-yellow-100 text-yellow-800': submission.status === '待面试',
-                  'bg-purple-100 text-purple-800': submission.status === '待笔试',
-                  'bg-green-100 text-green-800': submission.status === '已拿offer',
-                  'bg-red-100 text-red-800': submission.status === '已拒绝'
-                }">
-            {{ displayStatus(submission) }}
-            <template v-if="['待面试', '待笔试'].includes(submission.status)">
-              <template v-if="submission.interviewType">
-                <span class="opacity-75">-</span>
-                <span>{{ submission.interviewType }}</span>
-              </template>
-              <template v-if="submission.appointmentDate">
-                <span class="text-blue-600">
-                  （{{ formatDateTime(submission.appointmentDate) }}）
-                </span>
-              </template>
-            </template>
-          </div>
+      <div 
+        v-for="(submission, index) in submissions" 
+        :key="submission.company + submission.date"
+        class="group relative flex items-center p-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200 overflow-visible"
+      >
+        <div class="w-3/12 pl-2">{{ submission.company }}</div>
+        <div class="w-5/12">
           <div 
-            v-if="activeSubmission === submission"
-            class="status-menu-container fixed z-50 top-auto left-auto mt-2 bg-white border rounded-lg shadow-lg p-4 min-w-[200px] transition-all duration-200 origin-top"
-            :class="activeSubmission === submission ? 'scale-100' : 'scale-95 opacity-0'"
+            class="relative cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
+            @click.stop="openStatusMenu(submission)"
           >
-            <!-- 修改后：状态选择菜单，使用自定义下拉列表 -->
-            <ul class="mb-3">
-              <li 
-                v-for="option in statusOptions" 
-                :key="option" 
-                class="cursor-pointer hover:bg-blue-50 p-2 rounded"
-                :class="{'bg-blue-100': option === selectedStatus && (option === '待面试' || option === '待笔试')}"
-                @click.stop="selectStatus(option, submission)"
-              >
-                {{ option }}
-              </li>
-            </ul>
+            <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap" 
+                  :class="{
+                    'bg-blue-100 text-blue-800': submission.status === '待回复',
+                    'bg-yellow-100 text-yellow-800': submission.status === '待面试',
+                    'bg-purple-100 text-purple-800': submission.status === '待笔试',
+                    'bg-green-100 text-green-800': submission.status === '已拿offer',
+                    'bg-red-100 text-red-800': submission.status === '已拒绝'
+                  }">
+              {{ displayStatus(submission) }}
+              <template v-if="['待面试', '待笔试'].includes(submission.status)">
+                <template v-if="submission.interviewType">
+                  <span class="opacity-75">-</span>
+                  <span>{{ submission.interviewType }}</span>
+                </template>
+                <template v-if="submission.appointmentDate">
+                  <span class="text-blue-600">
+                    （{{ formatDateTime(submission.appointmentDate) }}）
+                  </span>
+                </template>
+              </template>
+            </div>
+            <div 
+              v-if="activeSubmission === submission"
+              class="status-menu-container absolute z-50 bg-white border border-gray-100 rounded-xl shadow-xl flex mt-2 mb-2"
+              :class="[
+                'transition-all duration-200',
+                activeSubmission === submission ? 'scale-100 opacity-100' : 'scale-95 opacity-0 translate-y-2',
+                'origin-bottom'
+              ]"
+              style="left: 0;"
+            >
+              <!-- 状态选项列表 -->
+              <ul class="p-2 space-y-0.5 min-w-[140px]">
+                <li 
+                  v-for="option in statusOptions" 
+                  :key="option" 
+                  class="cursor-pointer px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 text-sm"
+                  :class="{
+                    'bg-blue-50 text-blue-800': option === selectedStatus && option === '待回复',
+                    'bg-yellow-50 text-yellow-800': option === selectedStatus && option === '待面试',
+                    'bg-purple-50 text-purple-800': option === selectedStatus && option === '待笔试',
+                    'bg-green-50 text-green-800': option === selectedStatus && option === '已拿offer',
+                    'bg-red-50 text-red-800': option === selectedStatus && option === '已拒绝',
+                    'hover:bg-gray-50': option !== selectedStatus
+                  }"
+                  @click.stop="selectStatus(option, submission)"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full"
+                    :class="{
+                      'bg-blue-500': option === '待回复',
+                      'bg-yellow-500': option === '待面试',
+                      'bg-purple-500': option === '待笔试',
+                      'bg-green-500': option === '已拿offer',
+                      'bg-red-500': option === '已拒绝'
+                    }"
+                  ></span>
+                  {{ option }}
+                </li>
+              </ul>
 
-            <!-- 面试/笔试附加信息 -->
-            <div v-if="showInterviewForm" class="space-y-3 mt-3">
-              <select
-                v-model="interviewType"
-                class="w-full p-2 border rounded"
-                required
-                @click.stop
+              <!-- 面试/笔试附加信息 -->
+              <div v-if="showInterviewForm" 
+                class="w-[200px] p-2 space-y-2 border-l border-gray-100"
               >
-                <option disabled value="">线上/线下</option>
-                <option value="线上">线上</option>
-                <option value="线下">线下</option>
-                <option value="形式待定">形式待定</option>
-              </select>
-              <input
-                v-model="interviewTime"
-                type="datetime-local"
-                class="w-full p-2 border rounded"
-                required
-                @click.stop
-              >
-              <button
-                @click.stop="saveInterviewInfo"
-                class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                确认修改
-              </button>
+                <select
+                  v-model="interviewType"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                  @click.stop
+                >
+                  <option disabled value="">选择形式</option>
+                  <option value="线上">线上</option>
+                  <option value="线下">线下</option>
+                  <option value="形式待定">形式待定</option>
+                </select>
+                <input
+                  v-model="interviewTime"
+                  type="datetime-local"
+                  class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                  required
+                  @click.stop
+                >
+                <button
+                  @click.stop="saveInterviewInfo"
+                  class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium px-4 py-1.5 rounded-lg shadow hover:shadow-md transition-all duration-200"
+                >
+                  确认修改
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="w-2/12 text-gray-500 text-sm">{{ submission.location }}</div>
-      <div class="w-2/12 text-gray-500 text-sm">{{ formatDate(submission.date) }}</div>
+        <div class="w-2/12 text-gray-500 text-sm">{{ submission.location }}</div>
+        <div class="w-2/12 text-gray-500 text-sm">{{ formatDate(submission.date) }}</div>
 
-      <!-- 删除按钮 -->
-      <button
-        @click="deleteSubmission(submission)"
-        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-red-500 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-50 transition-colors duration-200 shadow-sm hover:shadow-md border border-red-100 opacity-0 group-hover:opacity-100"
-        title="删除"
-      >
-        ×
-      </button>
-    </div>
+        <!-- 删除按钮 -->
+        <button
+          @click="deleteSubmission(submission)"
+          class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-red-500 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-50 transition-colors duration-200 shadow-sm hover:shadow-md border border-red-100 opacity-0 group-hover:opacity-100"
+          title="删除"
+        >
+          ×
+        </button>
+      </div>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -190,14 +218,35 @@ function openStatusMenu(submission) {
     interviewType.value = ''
     interviewTime.value = submission.appointmentDate || ''
     
-    // 添加这段代码来处理菜单定位
     nextTick(() => {
       const menu = document.querySelector('.status-menu-container')
       const trigger = event.currentTarget
       if (menu && trigger) {
-        const rect = trigger.getBoundingClientRect()
-        menu.style.top = `${rect.bottom + window.scrollY}px`
-        menu.style.left = `${rect.left}px`
+        // 获取当前行的索引
+        const currentIndex = props.submissions.indexOf(submission)
+        const showBelow = currentIndex < 4 // 前4行向下弹出
+        
+        const menuWidth = menu.offsetWidth
+        const viewportWidth = window.innerWidth
+        const triggerRect = trigger.getBoundingClientRect()
+        
+        // 根据索引设置弹出方向
+        if (showBelow) {
+          menu.style.top = '100%'
+          menu.style.bottom = 'auto'
+          menu.classList.remove('origin-bottom')
+          menu.classList.add('origin-top')
+        } else {
+          menu.style.bottom = '100%'
+          menu.style.top = 'auto'
+          menu.classList.remove('origin-top')
+          menu.classList.add('origin-bottom')
+        }
+        
+        // 检查右侧边界
+        if (triggerRect.left + menuWidth > viewportWidth - 16) {
+          menu.style.left = `${-(menuWidth - triggerRect.width)}px`
+        }
       }
     })
   }
@@ -228,26 +277,77 @@ async function saveInterviewInfo() {
 }
 
 // 更新指定记录中的状态和附加信息，并关闭状态菜单
-function saveChanges(submission) {
+async function saveChanges(submission) {
   const fullIndex = store.submissions.findIndex(item => item === submission)
   if (fullIndex === -1) return
   const isoTime = interviewTime.value ? new Date(interviewTime.value).toISOString() : ''
-  store.$patch((state) => {
-    state.submissions[fullIndex] = {
-      ...submission,
-      status: selectedStatus.value,
-      interviewType: interviewType.value,
-      appointmentDate: isoTime
-    }
+  await store.updateSubmission(fullIndex, {
+    status: selectedStatus.value,
+    interviewType: interviewType.value,
+    appointmentDate: isoTime
   })
   activeSubmission.value = null
 }
 
-// 新增：删除记录时根据传入记录查找实际索引再删除
-function deleteSubmission(submission) {
+// 删除记录时的处理
+async function deleteSubmission(submission) {
   const fullIndex = store.submissions.findIndex(item => item === submission)
   if (fullIndex !== -1) {
-    store.removeSubmission(fullIndex)
+    await store.removeSubmission(fullIndex)
   }
 }
 </script>
+
+<style scoped>
+/* 菜单动画 */
+.status-menu-container {
+  animation: menu-pop 0.2s ease-out;
+}
+
+@keyframes menu-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 向上弹出的动画 */
+.origin-bottom {
+  transform-origin: bottom center;
+}
+
+/* 向下弹出的动画 */
+.origin-top {
+  transform-origin: top center;
+}
+
+/* 列表项进入和离开的过渡 */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* 列表项移动时的过渡 */
+.list-move {
+  transition: transform 0.5s ease;
+}
+
+/* 确保离开的项目不影响布局 */
+.list-leave-active {
+  position: absolute;
+}
+</style>
