@@ -12,7 +12,7 @@
     <div 
       v-for="(submission, index) in submissions" 
       :key="index"
-      class="group relative flex items-center p-2 border rounded hover:bg-gray-50 transition-colors"
+      class="group relative flex items-center p-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
     >
       <div class="w-4/12">{{ submission.company }}</div>
       <div class="w-4/12 relative">

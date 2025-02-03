@@ -1,11 +1,11 @@
 <template>
-  <div class="relative flex-1">
+  <div class="relative flex-1 ">
     <!-- 搜索输入框 -->
     <input
       v-model="searchKeyword"
       type="text"
       placeholder="搜索公司/地点/状态..."
-      class="w-full p-3 border rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      class="w-full p-3 border border-gray-400 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-blue-300"
     >
 
     <svg class="w-5 h-5 absolute left-3 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

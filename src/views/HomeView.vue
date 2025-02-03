@@ -16,20 +16,14 @@ const filteredSubmissions = ref(store.submissions)
     <div v-if="!showForm">
       <div class="flex items-center mb-6 gap-4">
         <!-- 搜索框 -->
-        <div class="w-1/8 mr-6">
-          <SearchFilter 
-            :submissions="store.submissions" 
-            @update:filtered="filteredSubmissions = $event"
-            class="w-full"
-          />
+        <div class="mr-10">
+          <SearchFilter :submissions="store.submissions" @update:filtered="filteredSubmissions = $event"/>
         </div>
         <!-- 投递按钮 -->
         <div class="flex items-center gap-3">
           <span class="text-2xl font-semibold text-gray-700 tracking-tight">新投递</span>
-          <button 
-            @click="showForm = true"
-            class="bg-blue-100 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-blue-200 transition-colors"
-          >
+          <button @click="showForm = true"
+            class="bg-blue-100 text-white w-10 h-10 flex items-center justify-center hover:bg-blue-200 transition-colors rounded-full">
             ➕
           </button>
         </div>
@@ -43,4 +37,3 @@ const filteredSubmissions = ref(store.submissions)
     <SubmissionList :submissions="filteredSubmissions" />
   </div>
 </template>
-
