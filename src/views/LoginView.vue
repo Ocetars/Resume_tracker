@@ -1,7 +1,14 @@
 <template>
-  <div class="login-container">
-    <h1>欢迎登录</h1>
-    <button @click="handleLogin" class="login-button">确认登录</button>
+  <div class="flex items-center justify-center h-[66vh]">
+    <div class="w-full max-w-md bg-white border border-gray-200 p-8 rounded-lg shadow-lg">
+      <h1 class="text-4xl font-bold mb-6 text-center text-gray-800">欢迎登录</h1>
+      <button 
+        @click="handleLogin" 
+        class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-300"
+      >
+        确认登录
+      </button>
+    </div>
   </div>
 </template>
 
@@ -14,29 +21,4 @@ export default {
     }
   }
 }
-</script>
-
-<style scoped>
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.login-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.login-button:hover {
-  background-color: #33a06f;
-}
-</style> 
+</script> 
