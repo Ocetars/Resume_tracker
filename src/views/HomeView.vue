@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import SubmissionForm from '@/components/SubmissionForm.vue'
 import SubmissionList from '@/components/SubmissionList.vue'
 import SearchFilter from '@/components/SearchFilter.vue'
@@ -8,6 +8,20 @@ import { useSubmissionStore } from '../stores/submissionStore'
 const store = useSubmissionStore()
 const showForm = ref(false)
 const filteredSubmissions = ref(store.submissions)
+
+// 根据 filteredSubmissions 计算各个状态的数量
+const appliedCount = computed(() =>
+  filteredSubmissions.value.filter(item => item.status === '已投递').length
+)
+const interviewCount = computed(() =>
+  filteredSubmissions.value.filter(item => item.status === '待面试').length
+)
+const testCount = computed(() =>
+  filteredSubmissions.value.filter(item => item.status === '待笔试').length
+)
+const offerCount = computed(() =>
+  filteredSubmissions.value.filter(item => item.status === 'offer').length
+)
 </script>
 
 <template>
@@ -27,9 +41,29 @@ const filteredSubmissions = ref(store.submissions)
             </svg>
             <span class="font-semibold">新增投递记录</span>
           </button>
-          <span class="text-gray-500 text-lg">已追踪 {{ filteredSubmissions.length }} 个岗位</span>
+
+          <!-- 修改后的岗位状态统计信息 -->
+          <div class="flex-1 text-center flex justify-around">
+            <div>
+              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">已投递</div>
+              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ appliedCount }}</div>
+            </div>
+            <div>
+              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">待面试</div>
+              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ interviewCount }}</div>
+            </div>
+            <div>
+              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">待笔试</div>
+              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ testCount }}</div>
+            </div>
+            <div>
+              <div class="text-gray-600 dark:text-gray-300 text-base font-medium">offer</div>
+              <div class="text-blue-600 dark:text-blue-400 text-xl font-semibold">{{ offerCount }}</div>
+            </div>
+          </div>
+
           <!-- 搜索框 -->
-          <div class="w-full md:w-56 md:ml-auto">
+          <div class="w-full md:w-56">
             <SearchFilter :submissions="store.submissions" @update:filtered="filteredSubmissions = $event"/>
           </div>
         </div>

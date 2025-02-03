@@ -19,9 +19,9 @@
         class="group relative flex items-center p-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-200 overflow-visible"
       >
         <div class="w-3/12 pl-2">{{ submission.company }}</div>
-        <div class="w-5/12">
+        <div class="w-5/12 relative">
           <div 
-            class="relative cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
+            class="cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
             @click.stop="openStatusMenu(submission)"
           >
             <div class="px-5 py-1 rounded-full text-sm inline-flex items-center gap-1 flex-wrap" 
@@ -47,13 +47,12 @@
             </div>
             <div 
               v-if="activeSubmission === submission"
-              class="status-menu-container absolute z-50 bg-white border border-gray-100 rounded-xl shadow-xl flex mt-2 mb-2"
+              class="status-menu-container fixed z-50 top-auto left-auto bg-white border border-gray-100 rounded-xl shadow-xl flex"
               :class="[
                 'transition-all duration-200',
                 activeSubmission === submission ? 'scale-100 opacity-100' : 'scale-95 opacity-0 translate-y-2',
                 'origin-bottom'
               ]"
-              style="left: 0;"
             >
               <!-- 状态选项列表 -->
               <ul class="p-2 space-y-0.5 min-w-[140px]">
@@ -222,31 +221,19 @@ function openStatusMenu(submission) {
       const menu = document.querySelector('.status-menu-container')
       const trigger = event.currentTarget
       if (menu && trigger) {
-        // 获取当前行的索引
-        const currentIndex = props.submissions.indexOf(submission)
-        const showBelow = currentIndex < 4 // 前4行向下弹出
+        const rect = trigger.getBoundingClientRect()
+        const menuHeight = menu.offsetHeight
+        
+        menu.style.top = `${rect.top - menuHeight - 8}px`
+        menu.style.left = `${Math.max(16, rect.left)}px`
         
         const menuWidth = menu.offsetWidth
         const viewportWidth = window.innerWidth
-        const triggerRect = trigger.getBoundingClientRect()
-        
-        // 根据索引设置弹出方向
-        if (showBelow) {
-          menu.style.top = '100%'
-          menu.style.bottom = 'auto'
-          menu.classList.remove('origin-bottom')
-          menu.classList.add('origin-top')
-        } else {
-          menu.style.bottom = '100%'
-          menu.style.top = 'auto'
-          menu.classList.remove('origin-top')
-          menu.classList.add('origin-bottom')
+        if (rect.left + menuWidth > viewportWidth) {
+          menu.style.left = `${viewportWidth - menuWidth - 16}px`
         }
-        
-        // 检查右侧边界
-        if (triggerRect.left + menuWidth > viewportWidth - 16) {
-          menu.style.left = `${-(menuWidth - triggerRect.width)}px`
-        }
+
+        menu.style.position = 'fixed'
       }
     })
   }
@@ -307,22 +294,12 @@ async function deleteSubmission(submission) {
 @keyframes menu-pop {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.95) translateY(4px);
   }
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
-}
-
-/* 向上弹出的动画 */
-.origin-bottom {
-  transform-origin: bottom center;
-}
-
-/* 向下弹出的动画 */
-.origin-top {
-  transform-origin: top center;
 }
 
 /* 列表项进入和离开的过渡 */
