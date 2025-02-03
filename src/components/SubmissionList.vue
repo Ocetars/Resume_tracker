@@ -18,13 +18,13 @@
       <div class="w-4/12 relative">
         <div 
           class="cursor-pointer hover:bg-gray-100 transition-colors rounded p-1"
-          @click.stop="openStatusMenu(index)"
+          @click.stop="openStatusMenu(submission)"
         >
           <span v-html="displayStatus(submission)"></span>
           <div 
-            v-if="activeIndex === index"
+            v-if="activeSubmission === submission"
             class="status-menu-container absolute z-10 top-full left-0 mt-2 bg-white border rounded-lg shadow-lg p-4 min-w-[200px] transition-all duration-200 origin-top"
-            :class="activeIndex === index ? 'scale-100' : 'scale-95 opacity-0'"
+            :class="activeSubmission === submission ? 'scale-100' : 'scale-95 opacity-0'"
           >
             <!-- 修改后：状态选择菜单，使用自定义下拉列表 -->
             <ul class="mb-3">
@@ -77,7 +77,7 @@
 
       <!-- 删除按钮 -->
       <button
-        @click="store.removeSubmission(index)"
+        @click="deleteSubmission(submission)"
         class="absolute -right-8 top-1/2 -translate-y-1/2 bg-red-100 text-red-600 w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors opacity-0 group-hover:opacity-100"
         title="删除"
       >
@@ -92,18 +92,23 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 // 导入状态管理 store 和 pinia 辅助函数
 import { useSubmissionStore } from '../stores/submissionStore'
-import { storeToRefs } from 'pinia'
 
 // ============================
 // 初始化状态管理及数据引用
 // ============================
+const props = defineProps({
+  submissions: {
+    type: Array,
+    required: true
+  }
+})
+
 const store = useSubmissionStore()
-const { submissions } = storeToRefs(store)
+const activeSubmission = ref(null)  // 当前激活的记录对象，null 表示无激活项
 
 // ============================
 // 定义局部响应式变量
 // ============================
-const activeIndex = ref(-1)               // 当前激活的列表项索引，-1 表示无激活项
 const selectedStatus = ref('')              // 当前选中的状态
 const interviewType = ref('')               // 面试/笔试类型（例如：线上或线下）
 const interviewTime = ref('')               // 面试/笔试时间
@@ -131,7 +136,7 @@ function formatDate(isoString) {
 function formatDateTime(isoString) {
   if (!isoString) return ''
   const date = new Date(isoString)
-  // 处理 Safari 等兼容性问题
+  // 处理兼容性问题
   const validDate = isNaN(date) ? new Date(isoString.replace(' ', 'T')) : date
   return `${validDate.getMonth() + 1}月${validDate.getDate()}日 ${String(validDate.getHours()).padStart(2, '0')}:${String(validDate.getMinutes()).padStart(2, '0')}`
 }
@@ -154,17 +159,19 @@ onBeforeUnmount(() => {
 function closeMenu(event) {
   const menu = document.querySelector('.status-menu-container')
   if (!menu || !menu.contains(event.target)) {
-    activeIndex.value = -1
+    activeSubmission.value = null
   }
 }
 
 // 切换状态菜单的显示，并初始化当前选中数据
-function openStatusMenu(index) {
-  activeIndex.value = activeIndex.value === index ? -1 : index
-  if (activeIndex.value !== -1) {
-    selectedStatus.value = submissions.value[index].status
+function openStatusMenu(submission) {
+  if (activeSubmission.value === submission) {
+    activeSubmission.value = null
+  } else {
+    activeSubmission.value = submission
+    selectedStatus.value = submission.status
     interviewType.value = '' // 重置线上线下选项为默认值
-    interviewTime.value = submissions.value[index].appointmentDate || ''
+    interviewTime.value = submission.appointmentDate || ''
   }
 }
 
@@ -197,21 +204,31 @@ function displayStatus(submission) {
 
 // 保存面试/笔试附加信息，并更新当前记录
 async function saveInterviewInfo() {
-  const submission = submissions.value[activeIndex.value]
-  saveChanges(submission)
+  if (!activeSubmission.value) return
+  saveChanges(activeSubmission.value)
 }
 
 // 更新指定记录中的状态和附加信息，并关闭状态菜单
 function saveChanges(submission) {
+  const fullIndex = store.submissions.findIndex(item => item === submission)
+  if (fullIndex === -1) return
   const isoTime = interviewTime.value ? new Date(interviewTime.value).toISOString() : ''
   store.$patch((state) => {
-    state.submissions[activeIndex.value] = {
+    state.submissions[fullIndex] = {
       ...submission,
       status: selectedStatus.value,
       interviewType: interviewType.value,
       appointmentDate: isoTime
     }
   })
-  activeIndex.value = -1
+  activeSubmission.value = null
+}
+
+// 新增：删除记录时根据传入记录查找实际索引再删除
+function deleteSubmission(submission) {
+  const fullIndex = store.submissions.findIndex(item => item === submission)
+  if (fullIndex !== -1) {
+    store.removeSubmission(fullIndex)
+  }
 }
 </script>

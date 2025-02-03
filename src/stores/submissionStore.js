@@ -16,6 +16,9 @@ export const useSubmissionStore = defineStore('submission', {
       this.submissions.splice(index, 1)
     }
   },
+  getters: {
+    getSubmissions: (state) => state.submissions
+  },
   persist: {
     key: 'job-submissions',
     storage: localStorage,
