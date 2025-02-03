@@ -15,5 +15,10 @@ export const useSubmissionStore = defineStore('submission', {
     removeSubmission(index) {
       this.submissions.splice(index, 1)
     }
+  },
+  persist: {
+    key: 'job-submissions',
+    storage: localStorage,
+    paths: ['submissions']
   }
 })
