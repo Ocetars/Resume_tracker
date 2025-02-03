@@ -1,36 +1,36 @@
-# 简历投递记录追踪系统
+# 简历追踪 (Resume Tracker)
 
-![Vue](https://img.shields.io/badge/Vue-3.4.21-brightgreen)
-![Pinia](https://img.shields.io/badge/Pinia-2.1.7-orange)
+## 简介
+简历追踪 是一款基于 Vue 3 的应用，用于管理和追踪求职者的简历。该项目利用现代前端技术栈构建，旨在为用户提供高效、便捷的简历管理体验。
 
-一个用于跟踪简历投递状态的单页面应用，帮助求职者清晰管理求职进度。
+## 网页功能与特色
+- 一站式管理：轻松添加、编辑、删除简历记录，所有操作均在单页面内实现，无需页面刷新。
+- 数据持久化保障：利用 Pinia 持久化插件，实现数据本地存储，确保信息安全。
+- 响应式体验：采用 Tailwind CSS 构建适配各种设备的响应式布局，提供流畅用户体验。
+- 流畅导航与互动：平滑页面切换和动态内容加载，优化交互体验。
+- 现代视觉设计：精心设计的界面，结合现代审美，为用户带来愉悦体验。
 
-[在线演示](https://your-vercel-app-url.vercel.app) | [项目文档](docs/README.md)
+## 安装与运行
+1. 克隆仓库：
+   git clone <repository-url>
+2. 进入项目目录：
+   cd resume_tracker
+3. 安装依赖：
+   npm install
+4. 启动开发服务器：
+   npm run dev
+5. 构建生产环境代码：
+   npm run build
+6. 预览生产环境代码：
+   npm run preview
 
-## 🛠️ 技术栈
+## 开发指南
+- 使用 ESLint 保持代码风格一致：
+   npm run lint
+- 推荐使用 VS Code 及相关插件提升开发体验。
 
-| 技术               | 用途                          | 文档链接                     |
-|--------------------|-----------------------------|---------------------------|
-| Vue 3              | 前端框架                      | https://vuejs.org/        |
-| Pinia              | 状态管理                      | https://pinia.vuejs.org/  |
-| Vue Router         | 路由管理                      | https://router.vuejs.org/ |
-| Pinia持久化插件      | 状态持久化                    | https://prazdevs.github.io/pinia-plugin-persistedstate/ |
-| date-fns           | 日期处理                      | https://date-fns.org/     |
-| Vercel             | 项目部署                      | https://vercel.com/       |
+## 贡献
+欢迎贡献代码、修复问题或提供意见，通过 issue 或 pull request 与我们联系。
 
-## 📦 项目结构
-
-```bash
-src/
-├─ assets/           # 静态资源
-├─ components/       # 公共组件
-│   └─ StatusBadge.vue # 状态标签组件
-├─ stores/           # Pinia状态管理
-│   └─ useJobStore.js # 核心数据逻辑
-├─ router/           # 路由配置
-├─ views/            # 页面组件
-│   ├─ HomeView.vue   # 首页
-│   ├─ AddJobView.vue # 添加记录
-│   └─ JobDetailView.vue # 详情页面
-├─ App.vue           # 根组件
-└─ main.js           # 入口文件
+## 许可
+本项目采用 MIT 许可证，详情见 LICENSE 文件。
