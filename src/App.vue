@@ -3,10 +3,16 @@
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
-    <!-- 应用标题 -->
-    <h1 class="text-2xl font-bold mb-2">简历投递记录</h1>
-  </div>
+  <header class="flex items-center gap-2 mt-5 ml-5">
+    <div
+      class="text-2xl w-10 h-10 flex items-center justify-center bg-blue-500 text-white font-bold rounded-full shadow-lg pb-1">
+      ⭐
+    </div>
+    <!-- logo文字 -->
+    <span class="text-xl text-gray-800 font-sans">
+      Resume Tracker
+    </span>
+  </header>
   <RouterView />
 </template>
 

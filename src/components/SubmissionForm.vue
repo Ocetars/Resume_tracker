@@ -1,6 +1,6 @@
 <template>
   <!-- 只渲染表单容器 -->
-  <div class="my-4 relative border rounded-lg p-4 bg-white shadow-lg">
+  <div class="my-4 relative border border-blue-100 rounded-xl p-6 bg-white shadow-lg">
     <!-- 关闭按钮 -->
     <button
       @click="closeForm"
@@ -17,7 +17,7 @@
           v-model="newSubmission.company"
           placeholder="XX公司"
           required
-          class="w-full border p-2 rounded"
+          class="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
         >
       </div>
 
@@ -62,7 +62,7 @@
       <div class="flex-1 min-w-[100px]">
         <button 
           type="submit" 
-          class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
         >
           提交
         </button>
